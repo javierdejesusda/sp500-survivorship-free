@@ -30,11 +30,16 @@ def scrape_wikipedia_data():
         original_cols = df_changes.columns
         new_cols = []
         for col in original_cols:
-            if 'Date' in col[0]: new_cols.append('Date')
-            elif 'Added' in col[0]: new_cols.append(f'Added_{col[1]}')
-            elif 'Removed' in col[0]: new_cols.append(f'Removed_{col[1]}')
-            elif 'Reason' in col[0]: new_cols.append('Reason')
-            else: new_cols.append('_'.join(col).strip())
+            if 'Date' in col[0]: 
+                new_cols.append('Date')
+            elif 'Added' in col[0]: 
+                new_cols.append(f'Added_{col[1]}')
+            elif 'Removed' in col[0]: 
+                new_cols.append(f'Removed_{col[1]}')
+            elif 'Reason' in col[0]: 
+                new_cols.append('Reason')
+            else: 
+                new_cols.append('_'.join(col).strip())
         df_changes.columns = new_cols
 
         if 'Reason' not in df_changes.columns:
