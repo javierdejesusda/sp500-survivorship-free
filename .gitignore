@@ -100,6 +100,7 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+GEMINI.md
 
 .pyre/
 
@@ -118,4 +119,3 @@ pyrightconfig.json
 sp500_precios_completos.csv
 WIKI_PRICES.csv
 
-*.csv

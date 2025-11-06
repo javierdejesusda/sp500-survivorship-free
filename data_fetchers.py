@@ -4,6 +4,7 @@ import sys
 import yfinance as yf
 from io import StringIO
 from datetime import datetime
+import os
 
 import config
 from utils import categorize_change
@@ -100,13 +101,14 @@ def load_and_preprocess_quandl(csv_path):
     except Exception as e:
         return None
 
-def get_yfinance_data(ticker, start_date):
+def get_yfinance_data(ticker, start_date, verbose=False):
     """
     Obtiene datos de yfinance Y ESTANDARIZA el nombre del índice a 'date'.
     
     Args:
         ticker (str): Ticker a consultar.
         start_date (str o datetime): Fecha de inicio para la consulta.
+        verbose (bool): Si es True, no suprime los mensajes de error de yfinance.
         
     Retorna:
         - df (pd.DataFrame): DataFrame con los datos, o None si falla.
@@ -114,12 +116,20 @@ def get_yfinance_data(ticker, start_date):
     try:
         start_date_str = (pd.to_datetime(start_date) + pd.Timedelta(days=1)).strftime('%Y-%m-%d')
         
+        if not verbose:
+            original_stderr = sys.stderr
+            sys.stderr = open(os.devnull, 'w')
+
         df = yf.download(
             ticker,
             start=start_date_str,
             auto_adjust=False,
             progress=False
         )
+
+        if not verbose:
+            sys.stderr.close()
+            sys.stderr = original_stderr
         
         if df.empty:
             return None
@@ -130,4 +140,7 @@ def get_yfinance_data(ticker, start_date):
         return df
         
     except Exception as e:
+        if not verbose:
+            sys.stderr.close()
+            sys.stderr = original_stderr
         return None
