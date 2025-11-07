@@ -34,20 +34,21 @@ This script depends on a large data file that **is not included** in this reposi
 
 This dataset contains historical prices up to April 11, 2018. The script is designed to take this database and complete it with the most recent data.
 
-**Place the `WIKI_PRICES.csv` file (1.8 GB) in the project's root folder before running.**
+**Place the `WIKI_PRICES.csv` file (1.8 GB) in the `data/` directory before running.**
 
 ## Features
 
 *   **Survivorship-Bias Free**: Includes all historical tickers, not just current ones.
 *   **Change Categorization**: Classifies why a company left the index (e.g., Merger/Acquisition, Spin-off).
 *   **Ticker Mapping**: Includes a manual correction map in `config.py` to handle symbol discrepancies between different data sources (e.g., `BF.B` vs `BF_B` vs `BF-B`).
-*   **Modular Code**: The project is organized into modules with clear responsibilities: configuration (`config.py`), data fetching (`data_fetchers.py`), local data processing (`process_local_data.py`), and a main orchestrator (`main.py`).
+*   **Modular Code**: The project is organized into modules with clear responsibilities: configuration (`config.py`), data fetching (`data_fetchers.py`), constituent management (`manage_constituents.py`), local data processing (`process_local_data.py`), feature engineering (`features/`), and a main orchestrator (`main.py`).
 *   **Verbose Logging**: A `--verbose` flag is available to get detailed, real-time feedback on the processing of each ticker.
 
 ## Requirements
 
 *   Python 3.8+
 *   The `WIKI_PRICES.csv` file (see "Main Data Source" section).
+*   A FRED API Key for downloading macroeconomic data.
 
 ## Installation
 
@@ -62,25 +63,51 @@ This dataset contains historical prices up to April 11, 2018. The script is desi
     pip install -r requirements.txt
     ```
 
-3.  **Download `WIKI_PRICES.csv`** from the [Kaggle link](https://www.kaggle.com/datasets/marketneutral/quandl-wiki-prices-us-equites) and place it in the project's root folder.
+3.  **Download `WIKI_PRICES.csv`** from the [Kaggle link](https://www.kaggle.com/datasets/marketneutral/quandl-wiki-prices-us-equites) and place it in the `data/` directory.
+
+4.  **Set up FRED API Key**:
+    *   Create a file named `.env` in the root of the project.
+    *   Add your FRED API key to this file as follows:
+        ```
+        FRED_API_KEY='your_api_key_here'
+        ```
 
 ## Usage
 
-Once `WIKI_PRICES.csv` is in place and the dependencies are installed, run the main script:
+### Main Data Pipeline
+
+To run the main data collection and processing pipeline, execute the `main.py` script. This will generate the final `data/sp500_precios_completos.csv` file.
 
 ```bash
 python main.py
 ```
 
-### Verbose Mode
-
-For detailed logging of the data fetching process for each ticker, use the `--verbose` or `-v` flag:
+For detailed logging, use the `--verbose` or `-v` flag:
 
 ```bash
 python main.py --verbose
 ```
 
-This is useful for debugging or monitoring the script's progress in real-time.
+### Constituent Data Management
+
+To generate or update the files related to the S&P 500 constituents (current list, historical changes, and ticker dates), use the `manage_constituents.py` script.
+
+```bash
+python manage_constituents.py
+```
+
+If you only need to update the current list of constituents, use the `--current-only` flag:
+```bash
+python manage_constituents.py --current-only
+```
+
+### Macroeconomic Feature Generation
+
+To download a dataset of macroeconomic features from the FRED database, run the script inside the `features` directory. This will generate the `features/macro_data_fred.csv` file.
+
+```bash
+python features/download_fred_data.py
+```
 
 ### Execution Phases
 
@@ -92,4 +119,4 @@ The script will run several phases:
 
 At the end of the execution, a final report will be displayed with the count of successfully processed tickers and a list of any tickers for which data could not be found.
 
-The final output will be saved incrementally to `sp500_precios_completos.csv`.
+The final output will be saved incrementally to `data/sp500_precios_completos.csv`.

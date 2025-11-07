@@ -1,5 +1,14 @@
-QUANDL_FILE_PATH = "WIKI_PRICES.csv"
-FINAL_OUTPUT_PATH = "sp500_precios_completos.csv"
+import os
+
+DATA_DIR = "data"
+
+QUANDL_FILE_PATH = os.path.join(DATA_DIR, "WIKI_PRICES.csv")
+
+CONSTITUENTS_PATH = os.path.join(DATA_DIR, "sp500_constituents.csv")
+HISTORICAL_CHANGES_PATH = os.path.join(DATA_DIR, "sp500_historical_changes.csv")
+TICKER_DATES_PATH = os.path.join(DATA_DIR, "sp500_ticker_dates.csv")
+
+FINAL_OUTPUT_PATH = os.path.join(DATA_DIR, "sp500_precios_completos.csv")
 
 WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies'
 REQUEST_HEADERS = {

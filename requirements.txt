@@ -1,4 +1,6 @@
 pandas
 requests
 yfinance
-lxml 
+lxml
+fredapi
+python-dotenv

@@ -5,8 +5,8 @@ import argparse
 
 import config
 from data_fetchers import (
-    scrape_wikipedia_data, 
-    load_and_preprocess_quandl, 
+    scrape_sp500_data,
+    load_and_preprocess_quandl,
     get_yfinance_data
 )
 from process_local_data import load_and_process_local_data
@@ -68,7 +68,7 @@ def process_and_save_data(all_tickers, quandl_dict, local_dict, output_path, cor
                             print(f"[DEBUG] Ticker {ticker_wiki}: Descargando la información completa. Datos desde {full_data.index.min().strftime('%Y-%m-%d')} hasta {full_data.index.max().strftime('%Y-%m-%d')}.")
 
                 if full_data is not None and not full_data.empty:
-                    full_data['ticker'] = ticker_yf 
+                    full_data['ticker'] = ticker_yf
                     full_data.reset_index(inplace=True) 
                     
                     cols = ['ticker', 'date', 'Open', 'High', 'Low', 'Adj Close', 'Volume']
@@ -105,10 +105,10 @@ def main():
     parser.add_argument('-v', '--verbose', action='store_true', help='Activa el modo verbose para depuración.')
     args = parser.parse_args()
 
-    df_cambios, all_tickers_ever = scrape_wikipedia_data()
-    
+    df_current, df_cambios, all_tickers_ever = scrape_sp500_data()
+
     quandl_data_dict = load_and_preprocess_quandl(config.QUANDL_FILE_PATH)
-    local_data_dict = load_and_process_local_data('data')
+    local_data_dict = load_and_process_local_data(config.DATA_DIR)
 
     if df_cambios is None or quandl_data_dict is None or all_tickers_ever is None:
         print("Error en los pasos iniciales (Wikipedia o Quandl). Saliendo del script.")
